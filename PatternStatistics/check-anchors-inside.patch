@@ -1,0 +1,79 @@
+diff --git a/src/main/java/de/uni_passau/sds/ecmascript2brics/ExpressionTree.java b/src/main/java/de/uni_passau/sds/ecmascript2brics/ExpressionTree.java
+index 87cbce1..2f13e0e 100644
+--- a/src/main/java/de/uni_passau/sds/ecmascript2brics/ExpressionTree.java
++++ b/src/main/java/de/uni_passau/sds/ecmascript2brics/ExpressionTree.java
+@@ -54,6 +54,36 @@ public class ExpressionTree {
+             throw new RuntimeException("This kind of node is not supported.");
+         }
+ 
++        public boolean containsHatAfterBegin() {
++            if (isLeaf) {
++                return false;
++            }
++            if (this instanceof Disjunction) {
++                return ((Disjunction) this).left.containsHatAfterBegin()
++                        || ((Disjunction) this).right.containsHatAfterBegin();
++            }
++            if (this instanceof Quantifier) {
++                if (this instanceof QuestionMark) {
++                    return ((Quantifier) this).input.containsHatAfterBegin();
++                }
++                return ((Quantifier) this).input.containsHat();
++            }
++            if (this instanceof Concatenation) {
++                Node[] inputArr = ((Concatenation) this).inputs;
++                if (inputArr[0].containsHatAfterBegin()) {
++                    return true;
++                }
++                for (int i = 1; i < inputArr.length; i++) {
++                    if (inputArr[i].containsHat()) {
++                        return true;
++                    }
++                }
++                return false;
++            }
++            // should not reach here
++            throw new RuntimeException("This kind of node is not supported.");
++        }
++
+         public boolean isNullable() {
+             if (isLeaf) { // node is character (class), anchor, empty word or symbol for any string
+                 return this instanceof EmptyWord || this instanceof AnyString
+@@ -110,6 +140,37 @@ public class ExpressionTree {
+             throw new RuntimeException("This kind of node is not supported.");
+         }
+ 
++        public boolean containsDollarBeforeEnd() {
++            if (isLeaf) {
++                return false;
++            }
++            if (this instanceof Disjunction) {
++                return ((Disjunction) this).left.containsDollarBeforeEnd()
++                        || ((Disjunction) this).right.containsDollarBeforeEnd();
++            }
++            if (this instanceof Quantifier) {
++                if (this instanceof QuestionMark) {
++                    return ((Quantifier) this).input.containsDollarBeforeEnd();
++                }
++                return ((Quantifier) this).input.containsDollar();
++            }
++            if (this instanceof Concatenation) {
++                Node[] inputArr = ((Concatenation) this).inputs;
++                int l = inputArr.length;
++                if (inputArr[l - 1].containsDollarBeforeEnd()) {
++                    return true;
++                }
++                for (int i = 0; i < l - 1; i++) {
++                    if (inputArr[i].containsDollar()) {
++                        return true;
++                    }
++                }
++                return false;
++            }
++            // should not reach here
++            throw new RuntimeException("This kind of node is not supported.");
++        }
++
+     }
+ 
+     public static class EmptyWord extends Node {
