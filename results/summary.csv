@@ -1,0 +1,14 @@
+Files total;82094
+Files with patterns;17747
+"pattern" count total;61994
+"patternProperties" count total;56154
+"pattern" count unique;2713
+"patternProperties" count unique;569
+Unique patterns;3232
+Invalid patterns;13
+Not supported patterns;79
+Unexpectedly not convertable patterns;0
+Anchored patterns;2648
+Inside anchored patterns;21
+Non-anchored patterns;492
+Nullable patterns;183
